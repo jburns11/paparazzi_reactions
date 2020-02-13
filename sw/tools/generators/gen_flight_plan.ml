@@ -182,6 +182,13 @@ let print_exception = fun x ->
     )
   end
 
+let print_reaction = fun x ->
+  let c = parsed_attrib x "cond" in
+  let v = parsed_attrib x "var" in
+  let r = parsed_attrib x "value" in
+  lprintf "if (%s) {%s = %s;}\n" c v r
+
+
 
 let element = fun a b c -> Xml.Element (a, b, c)
 let goto l = element "goto" ["name",l] []
@@ -310,7 +317,7 @@ let rec index_stage = fun x ->
       | "survey_rectangle" | "eight" | "oval"->
         incr stage; incr stage;
         Xml.Element (Xml.tag x, Xml.attribs x@["no", soi !stage], Xml.children x)
-      | "exception" ->
+      | "exception" | "reaction" ->
         x
       | s -> failwith (sprintf "Unknown stage: %s\n" s)
   end
@@ -603,7 +610,7 @@ let rec print_stage = fun index_of_waypoints x ->
         left ();
         stage ();
         fp_pre_call x;
-        lprintf "NavSurveyRectangle(%s, %s);\n" wp1 wp2;
+        lprintf "NavSurveyRectangle(%s, %s, %s);\n" wp1 wp2 grid;
         stage_until x;
         fp_post_call x;
         lprintf "break;\n"
@@ -628,7 +635,7 @@ let indexed_stages = fun blocks ->
           if (ExtXml.tag_is stage "for" || ExtXml.tag_is stage "while") then
             List.iter f (Xml.children stage)
         with Xml.No_attribute "no" ->
-          assert (ExtXml.tag_is stage "exception")
+          assert (ExtXml.tag_is stage "exception" || ExtXml.tag_is stage "reaction")
       in
       List.iter f (Xml.children b))
     blocks;
@@ -664,6 +671,11 @@ let print_block = fun index_of_waypoints (b:Xml.xml) block_num ->
 
   List.iter print_exception excpts;
 
+  let reactions, stages =
+    List.partition (fun x -> Xml.tag x = "reaction") (stages) in
+
+  List.iter print_reaction reactions;
+
   lprintf "switch(nav_stage) {\n";
   right ();
   stage := (-1);
@@ -677,7 +689,6 @@ let print_block = fun index_of_waypoints (b:Xml.xml) block_num ->
   (* Block exit *)
   fp_post_call b;
   lprintf "break;\n\n"
-
 
 
 let print_blocks = fun index_of_waypoints bs ->

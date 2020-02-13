@@ -28,7 +28,9 @@
 <!ELEMENT exceptions (exception*)>
 
 <!ELEMENT blocks (block+)>
-<!ELEMENT block (exception|while|heading|attitude|manual|go|xyz|set|call|call_once|circle|deroute|stay|follow|survey_rectangle|for|return|eight|oval|home|path)*>
+<!ELEMENT block (exception|while|heading|attitude|manual|go|xyz|set|call|call_once|circle|deroute|stay|follow|survey_rectangle|for|return|eight|oval|home|path|reaction)*>
+
+<!ELEMENT reaction EMPTY>
 
 <!ELEMENT include (arg|with)*>
 <!ELEMENT arg EMPTY>
@@ -146,6 +148,11 @@ strip_icon CDATA #IMPLIED
 group CDATA #IMPLIED
 key CDATA #IMPLIED
 description CDATA #IMPLIED>
+
+<!ATTLIST reaction
+cond CDATA #REQUIRED
+var CDATA #REQUIRED
+value CDATA #REQUIRED>
 
 <!ATTLIST exception
 cond CDATA #REQUIRED
