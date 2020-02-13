@@ -183,7 +183,7 @@ let print_exception = fun x ->
   end
 
 let print_reaction = fun x ->
-  let c = parsed_attrib x "cond" in
+  let c = parsed_attrib x "guard" in
   let v = parsed_attrib x "var" in
   let r = parsed_attrib x "value" in
   lprintf "if (%s) {%s = %s;}\n" c v r
@@ -610,7 +610,7 @@ let rec print_stage = fun index_of_waypoints x ->
         left ();
         stage ();
         fp_pre_call x;
-        lprintf "NavSurveyRectangle(%s, %s, %s);\n" wp1 wp2 grid;
+        lprintf "NavSurveyRectangle(%s, %s);\n" wp1 wp2;
         stage_until x;
         fp_post_call x;
         lprintf "break;\n"

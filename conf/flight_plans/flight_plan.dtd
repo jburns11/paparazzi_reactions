@@ -150,7 +150,7 @@ key CDATA #IMPLIED
 description CDATA #IMPLIED>
 
 <!ATTLIST reaction
-cond CDATA #REQUIRED
+guard CDATA #REQUIRED
 var CDATA #REQUIRED
 value CDATA #REQUIRED>
 
